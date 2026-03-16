@@ -44,6 +44,17 @@ public class Main {
                         listaStudenti.add(new Student(112, "Maria", "Popa", "TI21/1"));
                         listaStudenti.add(new Student(115, "Ion", "Ionescu", "TI21/2"));
                         listaStudenti.add(new Student(118, "Vasile", "Andrei", "TI21/1"));
+                        listaStudenti.add(new Student(120, "Alis", "Popa", "TI21/2"));
+
+                        boolean containsElement = listaStudenti.contains("Alis");
+                        boolean containsElement1 = listaStudenti.contains("Maria");
+
+                        for (Student s : listaStudenti) {
+                            System.out.println(s);
+                        }
+
+                        System.out.println(containsElement1);
+                        System.out.println(containsElement);
                     }
                 }
             }
