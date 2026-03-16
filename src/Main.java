@@ -38,6 +38,12 @@ public class Main {
                 for (Integer val : xPlusY) {
                     if (val <= p) {
                         xPlusYLimitedByP.add(val);
+
+                        List<Student> listaStudenti = new ArrayList<>();
+
+                        listaStudenti.add(new Student(112, "Maria", "Popa", "TI21/1"));
+                        listaStudenti.add(new Student(115, "Ion", "Ionescu", "TI21/2"));
+                        listaStudenti.add(new Student(118, "Vasile", "Andrei", "TI21/1"));
                     }
                 }
             }
