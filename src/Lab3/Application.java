@@ -16,6 +16,21 @@ public class Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            String paragraf = new String(Files.readAllBytes(Paths.get("in.txt")));
+
+            String[] fragmente = paragraf.split("\\.");
+
+            for (String fragment : fragmente) {
+                String rezultat = fragment.trim() + ".\n";
+                System.out.print(rezultat);
+            }
+
+        } catch (IOException e) {
+            // Gestionarea erorilor conform exemplului din laborator [cite: 26, 27]
+            e.printStackTrace();
+        }
     }
 
     static void printSmallTextFile(String fileName) throws IOException {
@@ -38,4 +53,5 @@ public class Application {
         }
     }
 }
+
 
