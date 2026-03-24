@@ -4,54 +4,39 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
-        try {
-            printSmallTextFile("in.txt");
-            System.out.println("\n");
-            printLargerTextFile("in.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Path pathIn = Paths.get("in.txt");
+        Path pathOut = Paths.get("out.txt");
 
         try {
-            String paragraf = new String(Files.readAllBytes(Paths.get("in.txt")));
-
-            String[] fragmente = paragraf.split("\\.");
+            String continut = new String(Files.readAllBytes(pathIn));
+            List<String> liniiRezultat = new ArrayList<>();
+            String[] fragmente = continut.split("\\.");
 
             for (String fragment : fragmente) {
-                String rezultat = fragment.trim() + ".\n";
-                System.out.print(rezultat);
+                String fragmentCurat = fragment.trim();
+
+                if (!fragmentCurat.isEmpty()) {
+                    String linieProcesata = fragmentCurat + ".\n";
+
+                    System.out.print(linieProcesata);
+
+                    liniiRezultat.add(linieProcesata);
+                }
             }
+            Files.write(pathOut, liniiRezultat);
 
         } catch (IOException e) {
-            // Gestionarea erorilor conform exemplului din laborator [cite: 26, 27]
             e.printStackTrace();
-        }
-    }
-
-    static void printSmallTextFile(String fileName) throws IOException {
-        System.out.println("Using Files.readAllLines:");
-        Path path = Paths.get(fileName);
-        List<String> allLinesInMemory = Files.readAllLines(path);
-        for (String line : allLinesInMemory) {
-            System.out.println(": " + line);
-        }
-    }
-
-    static void printLargerTextFile(String fileName) throws IOException {
-        System.out.println("Using Scanner:");
-        Path path = Paths.get(fileName);
-        try (Scanner scanner = new Scanner(path)) {
-            while (scanner.hasNextLine()) {
-//process each line in some way
-                System.out.println(": " + scanner.nextLine());
-            }
         }
     }
 }
+
+
 
 
