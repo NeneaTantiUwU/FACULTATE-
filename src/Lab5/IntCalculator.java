@@ -1,7 +1,5 @@
 package Lab5;
 
-public class AppLab5 {
-
     public class IntCalculator {
 
         private int state;
@@ -33,5 +31,5 @@ public class AppLab5 {
             this.state = 0;
         }
     }
-}
+
 

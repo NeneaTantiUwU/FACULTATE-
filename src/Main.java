@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.Collection;
 
-//comment
-
 public class Main {
     public static void main(String[] args) {
-
 
         Student s1 = new Student(1001, "Andrei", "Hogea", "Ing.Sist.Prgrm.1");
 
@@ -61,6 +58,8 @@ public class Main {
     public static boolean existaStudent(List<Student> lista, Student s) {
         return lista.contains(s);
     }
+
+
 }
 
 
