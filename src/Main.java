@@ -38,7 +38,7 @@ public class Main {
             }
         }
 
-        List<Student> listaStudenti = new ArrayList<>();
+
 
         listaStudenti.add(new Student(112, "Maria", "Popa", "TI21/1"));
         listaStudenti.add(new Student(115, "Ion", "Ionescu", "TI21/2"));
