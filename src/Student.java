@@ -4,15 +4,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
 
-class Student extends Object{
-    public int numărMatricol;
-    public String prenume;
-    public String nume;
-    public String formațieDeStudiu;
-    public double nota;
+import static org.junit.jupiter.api.Assertions.*;
 
-    public Student(int numărMatricol, String prenume, String nume, String formațieDeStudiu ,int nota){
+class Student extends Object {
+    public final int numărMatricol;
+    public final String prenume;
+    public final String nume;
+    public final String formațieDeStudiu;
+    public final double nota;
+
+    public Student(int numărMatricol, String prenume, String nume, String formațieDeStudiu, int nota) {
         this.numărMatricol = numărMatricol;
         this.prenume = prenume;
         this.nume = nume;
@@ -20,7 +25,7 @@ class Student extends Object{
         this.nota = nota;
     }
 
-    Student(int numărMatricol, String prenume, String nume, String formațieDeStudiu){
+    Student(int numărMatricol, String prenume, String nume, String formațieDeStudiu) {
         this.numărMatricol = numărMatricol;
         this.prenume = prenume;
         this.nume = nume;
@@ -28,39 +33,24 @@ class Student extends Object{
         this.nota = 0.0;
     }
 
+    public int getNumarMatricol() {
+        return numărMatricol;
+    }
+
+    public String getPrenume() {
+        return prenume;
+    }
+
     public String getNume() {
         return nume;
     }
 
-    public String getFormatieDeStudiu()
-    {
+    public String getFormatieDeStudiu() {
         return formațieDeStudiu;
     }
 
-    public int getNumarMatricol()
-    {
-        return numărMatricol;
-    }
-
-    public String getPrenume()
-    {
-        return prenume;
-    }
-
-    public void setNota(double nota) {this.nota=nota;}
-
-    public double getNota() {return nota;}
-
-    public String toString()
-    {
-        return
-                "Nume: " + nume + "\n" +
-                        "Prenume: " + prenume + "\n" +
-                        "Numar matricol: " + numărMatricol + "\n" +
-                        "Formatie de studiu: " + formațieDeStudiu + "\n" +
-                        "Nota: "+ nota + "\n";
-
-
+    public double getNota() {
+        return nota;
     }
 
     @Override
@@ -78,13 +68,10 @@ class Student extends Object{
         return java.util.Objects.hash(prenume, nume, formațieDeStudiu, nota);
     }
 
-    public static void citireFisier(String fisier, List<Student> lista) throws FileNotFoundException
-    {
-        try
-        {
+    public static void citireFisier(String fisier, List<Student> lista) throws FileNotFoundException {
+        try {
             Scanner sc = new Scanner(Paths.get(fisier));
-            while (sc.hasNextLine())
-            {
+            while (sc.hasNextLine()) {
                 String linie = sc.nextLine();
                 String[] date = linie.split(",");
 
@@ -99,11 +86,10 @@ class Student extends Object{
                         lista.add(student_nou);
 
                     } catch (NumberFormatException e) {
-                        System.out.println("numar matricol invalid la linia "+linie);
+                        System.out.println("numar matricol invalid la linia " + linie);
                     }
-                }
-                else
-                    System.out.println("Date incorecte la linia "+linie);
+                } else
+                    System.out.println("Date incorecte la linia " + linie);
             }
 
         } catch (IOException e) {
@@ -111,13 +97,10 @@ class Student extends Object{
         }
     }
 
-    public static void scriereFisier(List<Student> studenti, String fileName) throws FileNotFoundException
-    {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName)))
-        {
+    public static void scriereFisier(List<Student> studenti, String fileName) throws FileNotFoundException {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName))) {
 
-            for(Student s : studenti)
-            {
+            for (Student s : studenti) {
                 String linie = s.getNumarMatricol() + "," +
                         s.getNume() + "," +
                         s.getPrenume() + "," +
@@ -126,19 +109,15 @@ class Student extends Object{
                 writer.write(linie);
                 writer.newLine();
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("Eroare la scrierea in fisier");
         }
 
 
     }
 
-    public static void alocareNote(String filename, List<Student> listaStudenti,  HashMap<Integer, Student> index_studenti) throws FileNotFoundException
-    {
-        for (Student s : listaStudenti)
-        {
+    public static void alocareNote(String filename, List<Student> listaStudenti, HashMap<Integer, Student> index_studenti) throws FileNotFoundException {
+        for (Student s : listaStudenti) {
             index_studenti.put(s.getNumarMatricol(), s);
         }
 
@@ -158,7 +137,7 @@ class Student extends Object{
                         if (student_cautat != null) {
                             student_cautat.setNota(nota);
                         } else {
-                            System.out.println("nu a t fi gasit studentul cu numarul matricol "+nrMatricol);
+                            System.out.println("nu a t fi gasit studentul cu numarul matricol " + nrMatricol);
                         }
 
                     } catch (NumberFormatException e) {
@@ -171,14 +150,14 @@ class Student extends Object{
         }
     }
 
+    private void setNota(double nota) {
+    }
 
 
-    public static double gasesteNota(String nume, String prenume, Map<Integer, Student> ultim_map)
-    {
+    public static double gasesteNota(String nume, String prenume, Map<Integer, Student> ultim_map) {
         HashMap<String, Student> index_dupa_nume = new HashMap<>();
-        for (Student s : ultim_map.values())
-        {
-            String cheie = s.getPrenume()+"-" + s.getNume();
+        for (Student s : ultim_map.values()) {
+            String cheie = s.getPrenume() + "-" + s.getNume();
             index_dupa_nume.put(cheie, s);
         }
 
@@ -193,6 +172,28 @@ class Student extends Object{
         }
     }
 
+    public static Student mutaInFormatie(Student s, String nouaFormatie) {
+        return new Student(s.getNumarMatricol(), s.getPrenume(), s.getNume(), nouaFormatie, (int) s.getNota());
+    }
+
+    public static List<List<Student>> divideInGrupuri(List<Student> listaInitiala, String numeG1, String numeG2) {
+        List<Student> g1 = new ArrayList<>();
+        List<Student> g2 = new ArrayList<>();
+
+        int total = listaInitiala.size();
+        int prag = (total + 1) / 2; // Asigură n+1 pentru prima listă dacă totalul e impar
+
+        for (int i = 0; i < total; i++) {
+            if (i < prag) {
+                g1.add(mutaInFormatie(listaInitiala.get(i), numeG1));
+            } else {
+                g2.add(mutaInFormatie(listaInitiala.get(i), numeG2));
+            }
+        }
+
+        return Arrays.asList(g1, g2);
+
+    }
 }
 
 
