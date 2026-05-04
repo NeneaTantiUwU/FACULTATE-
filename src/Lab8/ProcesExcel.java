@@ -15,13 +15,10 @@ public class ProcesExcel {
     public static void main(String[] args) {
         String fisierIntrare = "laborator8_input.xlsx";
 
-        System.out.println("--- 8.5.1: Citire ---");
         citesteSiAfiseaza(fisierIntrare);
 
-        System.out.println("\n--- 8.5.2: Calcul Java (Output 2) ---");
         proceseazaSiCalculeazaMedia(fisierIntrare, "laborator8_output2.xlsx");
 
-        System.out.println("\n--- 8.5.3: Formula Excel (Output 3) ---");
         genereazaFisierCuFormula(fisierIntrare, "laborator8_output3.xlsx");
     }
 

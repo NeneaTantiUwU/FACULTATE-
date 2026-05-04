@@ -1,23 +1,22 @@
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 
-class Student extends Object {
+class Student {
     public final int numărMatricol;
     public final String prenume;
     public final String nume;
     public final String formațieDeStudiu;
-    public final double nota;
+    public double nota;
 
-    public Student(int numărMatricol, String prenume, String nume, String formațieDeStudiu, int nota) {
+    public Student(int numărMatricol, String prenume, String nume, String formațieDeStudiu, double nota) {
         this.numărMatricol = numărMatricol;
         this.prenume = prenume;
         this.nume = nume;
@@ -53,6 +52,40 @@ class Student extends Object {
         return nota;
     }
 
+    public void setNota(double nota) {
+        this.nota = nota;
+    }
+
+    public static void exportaStudentiExcel(List<Student> lista, String numeFisier) {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("Studenti");
+
+        Row header = sheet.createRow(0);
+        String[] coloane = {"Nr. Matricol", "Nume", "Prenume", "Grupa", "Nota"};
+        for (int i = 0; i < coloane.length; i++) {
+            Cell cell = header.createCell(i);
+            cell.setCellValue(coloane[i]);
+        }
+
+        int rowIdx = 1;
+        for (Student s : lista) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(s.getNumarMatricol());
+            row.createCell(1).setCellValue(s.getNume());
+            row.createCell(2).setCellValue(s.getPrenume());
+            row.createCell(3).setCellValue(s.getFormatieDeStudiu());
+            row.createCell(4).setCellValue(s.getNota());
+        }
+
+        try (FileOutputStream fileOut = new FileOutputStream(numeFisier)) {
+            workbook.write(fileOut);
+            workbook.close();
+            System.out.println("Export XLS finalizat cu succes: " + numeFisier);
+        } catch (IOException e) {
+            System.err.println("Eroare la exportul Excel: " + e.getMessage());
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -82,7 +115,7 @@ class Student extends Object {
                         String prenume = date[2];
                         String formatie = date[3];
 
-                        Student student_nou = new Student(nrMatricol, nume, prenume, formatie);
+                        Student student_nou = new Student(nrMatricol, prenume, nume, formatie);
                         lista.add(student_nou);
 
                     } catch (NumberFormatException e) {
@@ -91,7 +124,6 @@ class Student extends Object {
                 } else
                     System.out.println("Date incorecte la linia " + linie);
             }
-
         } catch (IOException e) {
             System.out.println("Eroare la citirea fisierului " + fisier);
         }
@@ -99,49 +131,38 @@ class Student extends Object {
 
     public static void scriereFisier(List<Student> studenti, String fileName) throws FileNotFoundException {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName))) {
-
             for (Student s : studenti) {
                 String linie = s.getNumarMatricol() + "," +
                         s.getNume() + "," +
                         s.getPrenume() + "," +
                         s.getFormatieDeStudiu();
-
                 writer.write(linie);
                 writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("Eroare la scrierea in fisier");
         }
-
-
     }
 
     public static void alocareNote(String filename, List<Student> listaStudenti, HashMap<Integer, Student> index_studenti) throws FileNotFoundException {
         for (Student s : listaStudenti) {
             index_studenti.put(s.getNumarMatricol(), s);
         }
-
         try (Scanner sc = new Scanner(Paths.get(filename))) {
             while (sc.hasNextLine()) {
                 String linie = sc.nextLine();
                 if (linie.trim().isEmpty()) continue;
-
                 String[] date = linie.split(",");
                 if (date.length == 2) {
                     try {
                         int nrMatricol = Integer.parseInt(date[0].trim());
                         double nota = Double.parseDouble(date[1].trim());
-
                         Student student_cautat = index_studenti.get(nrMatricol);
-
                         if (student_cautat != null) {
                             student_cautat.setNota(nota);
-                        } else {
-                            System.out.println("nu a t fi gasit studentul cu numarul matricol " + nrMatricol);
                         }
-
                     } catch (NumberFormatException e) {
-                        System.out.println("numar matricol sau nota invalida la linia " + linie);
+                        System.out.println("numar matricol sau nota invalida");
                     }
                 }
             }
@@ -150,50 +171,89 @@ class Student extends Object {
         }
     }
 
-    private void setNota(double nota) {
-    }
-
-
     public static double gasesteNota(String nume, String prenume, Map<Integer, Student> ultim_map) {
         HashMap<String, Student> index_dupa_nume = new HashMap<>();
         for (Student s : ultim_map.values()) {
             String cheie = s.getPrenume() + "-" + s.getNume();
             index_dupa_nume.put(cheie, s);
         }
-
         String cheie_cautare = prenume + "-" + nume;
         Student gasit = index_dupa_nume.get(cheie_cautare);
-
-        if (gasit != null) {
-
-            return gasit.getNota();
-        } else {
-            return 0.0;
-        }
+        return (gasit != null) ? gasit.getNota() : 0.0;
     }
 
     public static Student mutaInFormatie(Student s, String nouaFormatie) {
-        return new Student(s.getNumarMatricol(), s.getPrenume(), s.getNume(), nouaFormatie, (int) s.getNota());
+        return new Student(s.getNumarMatricol(), s.getPrenume(), s.getNume(), nouaFormatie, s.getNota());
     }
 
     public static List<List<Student>> divideInGrupuri(List<Student> listaInitiala, String numeG1, String numeG2) {
         List<Student> g1 = new ArrayList<>();
         List<Student> g2 = new ArrayList<>();
-
         int total = listaInitiala.size();
-        int prag = (total + 1) / 2; // Asigură n+1 pentru prima listă dacă totalul e impar
-
+        int prag = (total + 1) / 2;
         for (int i = 0; i < total; i++) {
-            if (i < prag) {
-                g1.add(mutaInFormatie(listaInitiala.get(i), numeG1));
-            } else {
-                g2.add(mutaInFormatie(listaInitiala.get(i), numeG2));
-            }
+            if (i < prag) g1.add(mutaInFormatie(listaInitiala.get(i), numeG1));
+            else g2.add(mutaInFormatie(listaInitiala.get(i), numeG2));
         }
-
         return Arrays.asList(g1, g2);
+    }
 
+    public static void writeToXls(List<Student> studenti, String xlsFileName) {
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("Lista Studenti");
+
+            String[] headers = {"Nr. Matricol", "Nume", "Prenume", "Formatie de Studiu", "Nota"};
+            Row headerRow = sheet.createRow(0);
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+
+            int rowIdx = 1;
+            for (Student s : studenti) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(s.getNumarMatricol());
+                row.createCell(1).setCellValue(s.getNume());
+                row.createCell(2).setCellValue(s.getPrenume());
+                row.createCell(3).setCellValue(s.getFormatieDeStudiu());
+                row.createCell(4).setCellValue(s.getNota());
+            }
+
+            try (FileOutputStream out = new FileOutputStream(new File(xlsFileName))) {
+                workbook.write(out);
+                System.out.println("s-a creeat fisierul " + xlsFileName);
+            }
+        } catch (IOException e) {
+            System.out.println("nu s-a putut creea fisierul: " + xlsFileName);
+        }
+    }
+
+    public static List<Student> readFromXls(String fileName) {
+        List<Student> listaStudenti = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(new File(fileName));
+             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            if (rowIterator.hasNext()) {
+                rowIterator.next();
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                int nrMatricol = (int) row.getCell(0).getNumericCellValue();
+                String nume = row.getCell(1).getStringCellValue();
+                String prenume = row.getCell(2).getStringCellValue();
+                String formatie = row.getCell(3).getStringCellValue();
+                double nota = row.getCell(4).getNumericCellValue();
+
+                listaStudenti.add(new Student(nrMatricol, prenume, nume, formatie, nota));
+            }
+        } catch (IOException e) {
+            System.out.println("fisierul nu poate fi deschis " + e.getMessage());
+        }
+        return listaStudenti;
     }
 }
-
-
