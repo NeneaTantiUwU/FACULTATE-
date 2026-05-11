@@ -4,7 +4,7 @@ public class PasswordMaker {
     private static final int MAGIC_NUMBER = 3;
     private static final String MAGIC_STRING;
 
-    private String name;
+    private static String name;
 
     private static PasswordMaker instance;
     private static int accessCount = 0;
@@ -14,7 +14,7 @@ public class PasswordMaker {
         MAGIC_STRING = srand.randomString(20);
     }
 
-    public static PasswordMaker getInstance(String name) {
+    public static PasswordMaker getInstance() {
 
         accessCount++;
 
@@ -34,6 +34,10 @@ public class PasswordMaker {
 
     public static int getAccessCount() {
         return accessCount;
+    }
+
+    public static String getCallingCounts() {
+        return "";
     }
 
 
