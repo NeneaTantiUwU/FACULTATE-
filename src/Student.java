@@ -35,12 +35,29 @@ class Student {
     }
 
     // Getters și Setters
-    public int getNumarMatricol() { return numărMatricol; }
-    public String getPrenume() { return prenume; }
-    public String getNume() { return nume; }
-    public String getFormatieDeStudiu() { return formațieDeStudiu; }
-    public double getNota() { return nota; }
-    public void setNota(double nota) { this.nota = nota; }
+    public int getNumarMatricol() {
+        return numărMatricol;
+    }
+
+    public String getPrenume() {
+        return prenume;
+    }
+
+    public String getNume() {
+        return nume;
+    }
+
+    public String getFormatieDeStudiu() {
+        return formațieDeStudiu;
+    }
+
+    public double getNota() {
+        return nota;
+    }
+
+    public void setNota(double nota) {
+        this.nota = nota;
+    }
 
     // Metoda toString este esențială pentru System.out.println
     @Override
@@ -113,15 +130,15 @@ class Student {
     public static void main(String[] args) {
         // LAB 9
         List<Student> studentiCuNote = Arrays.asList(
-                new Student(1025, "Andrei",   "Popa",     "ISM141/2", 8.70),
-                new Student(1024, "Ioan",     "Mihalcea", "ISM141/1", 10.0),
-                new Student(1026, "Anamaria", "Prodan",   "TI131/1",  8.90),
-                new Student(1029, "Bianca",   "Popescu",  "TI131/1",  10.0),
-                new Student(1030, "Maria",    "Pana",     "TI131/2",  4.10),
-                new Student(1031, "Gabriela", "Mohanu",   "TI131/2",  7.33),
-                new Student(1032, "Marius",   "Nasta",    "TI131/2",  3.20),
-                new Student(1033, "Marius",   "Nasta",    "TI131/1",  5.12),
-                new Student(1034, "Andrei",   "Dobrescu", "TI131/2",  2.22)
+                new Student(1025, "Andrei", "Popa", "ISM141/2", 8.70),
+                new Student(1024, "Ioan", "Mihalcea", "ISM141/1", 10.0),
+                new Student(1026, "Anamaria", "Prodan", "TI131/1", 8.90),
+                new Student(1029, "Bianca", "Popescu", "TI131/1", 10.0),
+                new Student(1030, "Maria", "Pana", "TI131/2", 4.10),
+                new Student(1031, "Gabriela", "Mohanu", "TI131/2", 7.33),
+                new Student(1032, "Marius", "Nasta", "TI131/2", 3.20),
+                new Student(1033, "Marius", "Nasta", "TI131/1", 5.12),
+                new Student(1034, "Andrei", "Dobrescu", "TI131/2", 2.22)
         );
 
         studentiCuNote.stream()
@@ -135,7 +152,7 @@ class Student {
         List<Student> listaCorectata = studentiCuNote.stream()
                 .map(s -> {
                     if (s.getNota() < 4) {
-                        // Creem un student nou cu nota 4 (imutabilitate!)
+                        // Cream un student nou cu nota 4 (imutabilitate!)
                         return new Student(
                                 s.getNumarMatricol(),
                                 s.getPrenume(),
@@ -154,5 +171,117 @@ class Student {
                         (suma, s) -> suma + s.getNota(),
                         Double::sum);
         System.out.println("\n=== Suma notelor: " + sumaNote + " ===");
+
+        // Interfața Strategy
+        interface ExportStrategy {
+            void export(List<Student> studenti);
+        }
+
+// Strategia 1: Export simplu în consolă (Format tabelar)
+        class ConsoleExportStrategy implements ExportStrategy {
+            @Override
+            public void export(List<Student> studenti) {
+                System.out.println("\n--- Export Consolă ---");
+                studenti.forEach(System.out::println);
+            }
+        }
+
+// Strategia 2: Export în format CSV (Comma Separated Values)
+        class CSVExportStrategy implements ExportStrategy {
+            @Override
+            public void export(List<Student> studenti) {
+                System.out.println("\n--- Export format CSV ---");
+                System.out.println("ID,Nume,Prenume,Grupa,Medie");
+                for (Student s : studenti) {
+                    System.out.printf("%d,%s,%s,%s,%.2f%n",
+                            s.getNumarMatricol(), s.getNume(), s.getPrenume(), s.getFormatieDeStudiu(), s.getNota());
+                }
+            }
+        }
+
+// Contextul: Clasa care utilizează o strategie
+        class StudentExporter {
+            private ExportStrategy strategy;
+
+            public void setStrategy(ExportStrategy strategy) {
+                this.strategy = strategy;
+            }
+
+            public void executeExport(List<Student> studenti) {
+                if (strategy == null) {
+                    System.out.println("Eroare: Nu a fost setată nicio strategie de export!");
+                    return;
+                }
+                strategy.export(studenti);
+            }
+        }
+
+        interface IStudentiExport {
+            void doExport(List<Student> studenti);
+        }
+
+// 3. Implementarea Concretă a Strategiei (StudentiInConsola)
+        class StudentiInConsola implements IStudentiExport {
+            @Override
+            public void doExport(List<Student> studenti) {
+                System.out.println("\n--- Export Studenți în Consolă ---");
+                for (Student student : studenti) {
+                    System.out.println(student);
+                }
+            }
+        }
+
+// 4. Contextul (Clasa Exporter)
+        class Exporter {
+            private List<Student> studenti;
+            private IStudentiExport studentExport;
+
+            // Constructor care primește lista de studenți și instanța strategiei
+            public Exporter(List<Student> studenti, IStudentiExport studentExport) {
+                this.studenti = studenti;
+                this.studentExport = studentExport;
+            }
+
+            // Metoda care declanșează exportul
+            public void proceseazaExport() {
+                if (studentExport != null) {
+                    studentExport.doExport(studenti);
+                } else {
+                    System.out.println("Eroare: Strategia de export nu a fost setată!");
+                }
+            }
+
+            // Setter opțional pentru a schimba strategia ulterior (dacă este necesar)
+            public void setStudentExport(IStudentiExport studentExport) {
+                this.studentExport = studentExport;
+            }
+        }
+
+// 5. Clasa Principală
+        class AplicatieCuStrategy {
+            public void main(String[] args) {
+                // Datele inițiale
+                List<Student> studenti = Arrays.asList(
+                        new Student(1025, "Andrei", "Popa", "ISM141/2", 8.70),
+                        new Student(1024, "Ioan", "Mihalcea", "ISM141/1", 10),
+                        new Student(1026, "Anamaria", "Prodan", "TI131/1", 8.90),
+                        new Student(1029, "Bianca", "Popescu", "TI131/1", 10),
+                        new Student(1029, "Maria", "Pana", "TI131/2", 4.10),
+                        new Student(1029, "Gabriela", "Mohanu", "TI131/2", 7.33),
+                        new Student(1029, "Marius", "Nasta", "TI131/2", 3.20),
+                        new Student(1029, "Marius", "Nasta", "TI131/1", 5.12),
+                        new Student(1029, "Andrei", "Dobrescu", "TI131/2", 2.22)
+                );
+
+                // Instanțiem strategia concretă
+                IStudentiExport strategieConsola = new StudentiInConsola();
+
+                // Creăm instanța Exporter (Contextul) cu lista de studenți și strategia
+                Exporter exporter = new Exporter(studenti, strategieConsola);
+
+                // Apelăm metoda care execută exportul
+                exporter.proceseazaExport();
+            }
+        }
     }
 }
