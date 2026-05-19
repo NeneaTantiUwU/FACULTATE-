@@ -8,7 +8,7 @@ import java.util.Collection;
 public class Main {
     public static void main(String[] args) {
 
-        Student s1 = new Student(1001, "Andrei", "Hogea", "Ing.Sist.Prgrm.1");
+        Student s1 = new Student(1001, "Andrei", "Hogea", "Ing.Sist.Prgrm.1", 10);
 
         Random random = new Random();
 
@@ -40,10 +40,10 @@ public class Main {
 
         List<Student> listaStudenti = new ArrayList<>();
 
-        listaStudenti.add(new Student(112, "Maria", "Popa", "TI21/1"));
-        listaStudenti.add(new Student(115, "Ion", "Ionescu", "TI21/2"));
-        listaStudenti.add(new Student(118, "Vasile", "Andrei", "TI21/1"));
-        listaStudenti.add(new Student(120, "Alis", "Popa", "TI21/2"));
+        listaStudenti.add(new Student(112, "Maria", "Popa", "TI21/1", 4));
+        listaStudenti.add(new Student(115, "Ion", "Ionescu", "TI21/2", 8));
+        listaStudenti.add(new Student(118, "Vasile", "Andrei", "TI21/1", 7));
+        listaStudenti.add(new Student(120, "Alis", "Popa", "TI21/2", 9));
 
         boolean containsElement = listaStudenti.contains("Alis");
         boolean containsElement1 = listaStudenti.contains("Maria");
