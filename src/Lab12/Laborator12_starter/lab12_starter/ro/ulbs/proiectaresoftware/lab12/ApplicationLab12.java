@@ -10,7 +10,7 @@ public class ApplicationLab12 {
         CookingTasks t3 = new CookingTasks(Arrays.asList("Grab flour","grab eggs","grab sugar","grab cinamon","cook all","add cream","add icecream","DONE Dessert"));
         CookingTasks t4 = new CookingTasks(Arrays.asList("Grab rice and boil","DONE Rice"));
 
-        t1.run();
+        t1.run(); //com
         t2.run();
         t3.run();
         t4.run();

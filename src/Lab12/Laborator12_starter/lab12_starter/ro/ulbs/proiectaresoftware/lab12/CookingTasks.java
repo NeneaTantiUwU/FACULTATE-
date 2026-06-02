@@ -22,7 +22,7 @@ public class CookingTasks implements Runnable{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
+        } //com
         Long t2 = System.currentTimeMillis();
         String lastTask = tasks.get(length-1)  +"  time: " + (t2 - t1)+" ms";
         doTask(lastTask);
